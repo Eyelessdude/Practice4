@@ -1,0 +1,38 @@
+package ua.nure.dudka.practice4;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class Part4Test {
+    private Part4 part4 = new Part4("This is a test string. Hello there.");
+
+    @Test
+    public void testIterator() {
+        Part4.IteratorImpl iterator = (Part4.IteratorImpl) part4.iterator();
+        Class expectedClass = Part4.IteratorImpl.class;
+        Class actualClass = iterator.getClass();
+
+        assertNotNull(iterator);
+        assertEquals(expectedClass, actualClass);
+    }
+
+    @Test
+    public void testHasNext() {
+        Part4.IteratorImpl iterator = (Part4.IteratorImpl) part4.iterator();
+
+        assertTrue(iterator.hasNext());
+    }
+
+    @Test
+    public void testNext() {
+        Part4.IteratorImpl iterator = (Part4.IteratorImpl) part4.iterator();
+
+        String expectedString = "This is a test string.";
+
+        assertTrue(iterator.hasNext());
+
+        String actualStrng = (String) iterator.next();
+        assertEquals(expectedString, actualStrng);
+    }
+}

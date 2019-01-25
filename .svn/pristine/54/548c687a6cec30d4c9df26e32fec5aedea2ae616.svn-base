@@ -1,0 +1,32 @@
+package ua.nure.dudka.practice4;
+
+public class Part1 {
+    private static final int MAX_WORD_LENGTH = 3;
+    public static String toUpperCase(String input) {
+        String[] toUpperCaseWords;
+        String[] defaultWords;
+        String result = input;
+
+        toUpperCaseWords = input.replaceAll("\\p{P}", "").split("\\s+");
+        defaultWords = input.replaceAll("\\p{P}", "").split("\\s+");
+
+        for (int i = 0; i < toUpperCaseWords.length; i++) {
+            if (toUpperCaseWords[i].length() > MAX_WORD_LENGTH) {
+                toUpperCaseWords[i] = toUpperCaseWords[i].toUpperCase();
+            }
+        }
+
+        for (int i = 0; i < defaultWords.length; i++) {
+            result = result.replaceAll(defaultWords[i], toUpperCaseWords[i]);
+        }
+
+        return result;
+
+    }
+
+    public static void main(String[] args) {
+        String input = Util.readFile("part1.txt");
+
+        System.out.println(toUpperCase(input));
+    }
+}

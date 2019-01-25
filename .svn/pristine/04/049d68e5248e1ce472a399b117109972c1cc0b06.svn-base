@@ -1,0 +1,10 @@
+package ua.nure.dudka.practice4;
+
+import org.junit.Test;
+
+public class Part2Test {
+    @Test
+    public void test() {
+        System.out.println("Test from part2");
+    }
+}

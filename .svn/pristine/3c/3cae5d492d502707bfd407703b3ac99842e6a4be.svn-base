@@ -1,0 +1,133 @@
+package ua.nure.dudka.practice4;
+
+import java.io.*;
+import java.security.SecureRandom;
+import java.util.Random;
+
+public class Part2 {
+    private static final int ARRAY_MAX_LENGTH = 10;
+    private static final int MAX_RANDOM_DIGIT = 10;
+
+    public void write(String fileName, String text) {
+        if (createFile(fileName) == null) {
+            return;
+        }
+
+        try (OutputStreamWriter fileWriter = createFile(fileName);
+             BufferedWriter writer = new BufferedWriter(fileWriter)) {
+            writer.write(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String read(String fileName) {
+        String fileContent = null;
+
+        try (FileInputStream fileReader = new FileInputStream(fileName);
+             InputStreamReader inputStreamReader = new InputStreamReader(fileReader, "Cp1251");
+             BufferedReader reader = new BufferedReader(inputStreamReader)) {
+            fileContent = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileContent;
+    }
+
+    private static OutputStreamWriter createFile(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return null;
+        }
+
+        OutputStreamWriter writer;
+        FileOutputStream fileWriter;
+
+        try {
+            fileWriter = new FileOutputStream(fileName);
+            writer = new OutputStreamWriter(fileWriter, "Cp1251");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return writer;
+    }
+
+    private static int[] randomNumbers() {
+        Random random = new SecureRandom();
+        int[] randomNumbers = new int[ARRAY_MAX_LENGTH];
+        int currentRandomNumber;
+
+        for (int i = 0; i < ARRAY_MAX_LENGTH; i++) {
+            currentRandomNumber = random.nextInt(MAX_RANDOM_DIGIT + 1);
+            randomNumbers[i] = currentRandomNumber;
+        }
+
+        return randomNumbers;
+    }
+
+    public int[] sortArray(int[] array) {
+        int[] tempArray = array.clone();
+        int length = tempArray.length;
+        int temp;
+
+        for (int i = 0; i < length; i++) {
+            for (int j = 1; j < (length - i); j++) {
+                if (tempArray[j - 1] > tempArray[j]) {
+                    temp = tempArray[j - 1];
+                    tempArray[j - 1] = tempArray[j];
+                    tempArray[j] = temp;
+                }
+            }
+        }
+
+        return tempArray;
+    }
+
+    public String perform(String firstFileName, String secondFileName) {
+        StringBuilder numbersBuilder = new StringBuilder();
+        StringBuilder resultBuilder = new StringBuilder();
+
+        int[] testArray = randomNumbers();
+        for (int i = 0; i < testArray.length; i++) {
+            numbersBuilder.append(testArray[i]).append(" ");
+        }
+
+        String testString = String.valueOf(numbersBuilder).trim();
+        write(firstFileName, testString);
+
+        String[] numbers = read(firstFileName).split("\\s+");
+        testArray = new int[numbers.length];
+
+        resultBuilder.append("input  ==> ");
+        for (int i = 0; i < testArray.length; i++) {
+            testArray[i] = Integer.parseInt(numbers[i]);
+            resultBuilder.append(testArray[i]).append(" ");
+        }
+
+        int[] sortedArray = sortArray(testArray);
+        numbersBuilder = new StringBuilder();
+
+        resultBuilder.deleteCharAt(resultBuilder.length() - 1);
+        resultBuilder.append(System.lineSeparator());
+        resultBuilder.append("output ==> ");
+        for (int number : sortedArray) {
+            resultBuilder.append(number).append(" ");
+            numbersBuilder.append(number).append(" ");
+        }
+
+        resultBuilder.deleteCharAt(resultBuilder.length() - 1);
+        testString = String.valueOf(numbersBuilder).trim();
+        write(secondFileName, testString);
+
+        return String.valueOf(resultBuilder);
+    }
+
+    public static void main(String[] args) {
+        Part2 test = new Part2();
+        String firstFileName = "part2.txt";
+        String secondFileName = "part2_sorted.txt";
+        System.out.println(test.perform(firstFileName, secondFileName));
+    }
+}

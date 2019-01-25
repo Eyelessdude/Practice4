@@ -1,0 +1,39 @@
+package ua.nure.dudka.practice4;
+
+import org.junit.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.Assert.*;
+
+public class Part5Test {
+    private static final String TEST_STRING = "Hello there";
+    private static final String RU_LOCALE = "ru";
+    private static final String EN_LOCALE = "en";
+    private static final String KEY = "table";
+    private Part5 part5 = new Part5();
+
+    @Test
+    public void testParseString() {
+        String[] expectedArray = {"Hello", "there"};
+        String[] actualArray = part5.parseString(TEST_STRING);
+
+        assertArrayEquals(expectedArray, actualArray);
+    }
+
+    @Test
+    public void testGetEnResources() {
+        String expectedString = "table";
+        String actualString = part5.getResource(KEY, EN_LOCALE);
+
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void testGetRuResources() {
+        String expectedString = "стол";
+        String actualString = new String(part5.getResource(KEY, RU_LOCALE).getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
+        assertEquals(expectedString, actualString);
+    }
+}

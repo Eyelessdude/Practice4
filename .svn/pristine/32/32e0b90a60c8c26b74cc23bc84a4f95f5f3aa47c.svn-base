@@ -1,0 +1,134 @@
+package ua.nure.dudka.practice4;
+
+import java.io.*;
+import java.security.SecureRandom;
+import java.util.Random;
+
+public class Part2 {
+
+    public void write(String fileName, String text) {
+        if (createFile(fileName) == null) {
+            return;
+        }
+
+        FileWriter fileWriter = createFile(fileName);
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+        try {
+            writer.write(text);
+            writer.close();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String read(String fileName) {
+        FileReader fileReader;
+        BufferedReader reader;
+        String fileContent = null;
+
+        try {
+            fileReader = new FileReader(fileName);
+            reader = new BufferedReader(fileReader);
+            fileContent = reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileContent;
+    }
+
+    private FileWriter createFile(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return null;
+        }
+
+        FileWriter writer;
+
+        try {
+            writer = new FileWriter(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return writer;
+    }
+
+    private int[] randomNumbers() {
+        Random random = new SecureRandom();
+        int[] randomNumbers = new int[10];
+        int currentRandomNumber;
+
+        for (int i = 0; i < 10; i++) {
+            currentRandomNumber = random.nextInt(50 + 1);
+            randomNumbers[i] = currentRandomNumber;
+        }
+
+        return randomNumbers;
+    }
+
+    private int[] sortArray(int[] array) {
+        int[] tempArray = array.clone();
+        int length = tempArray.length;
+        int temp;
+
+        for (int i = 0; i < length; i++) {
+            for (int j = 1; j < (length - i); j++) {
+                if (tempArray[j - 1] > tempArray[j]) {
+                    temp = tempArray[j - 1];
+                    tempArray[j - 1] = tempArray[j];
+                    tempArray[j] = temp;
+                }
+            }
+        }
+
+        return tempArray;
+    }
+
+    public String perform(String firstFileName, String secondFileName) {
+        StringBuilder numbersBuilder = new StringBuilder();
+        StringBuilder resultBuilder = new StringBuilder();
+
+        int[] testArray = randomNumbers();
+        for (int i = 0; i < testArray.length; i++) {
+            numbersBuilder.append(testArray[i]).append(" ");
+        }
+
+        String testString = String.valueOf(numbersBuilder).trim();
+        write(firstFileName, testString);
+
+        String[] numbers = read(firstFileName).split("\\s+");
+        testArray = new int[numbers.length];
+
+        resultBuilder.append("input  ==> ");
+        for (int i = 0; i < testArray.length; i++) {
+            testArray[i] = Integer.parseInt(numbers[i]);
+            resultBuilder.append(testArray[i]).append(" ");
+        }
+
+        int[] sortedArray = sortArray(testArray);
+        numbersBuilder = new StringBuilder();
+
+        resultBuilder.deleteCharAt(resultBuilder.length() - 1);
+        resultBuilder.append(System.lineSeparator());
+        resultBuilder.append("output ==> ");
+        for (int number : sortedArray) {
+            resultBuilder.append(number).append(" ");
+            numbersBuilder.append(number).append(" ");
+        }
+
+        resultBuilder.deleteCharAt(resultBuilder.length() - 1);
+        testString = String.valueOf(numbersBuilder).trim();
+        write(secondFileName, testString);
+
+        return String.valueOf(resultBuilder);
+    }
+
+    public static void main(String[] args) {
+        Part2 test = new Part2();
+        String firstFileName = "part2.txt";
+        String secondFileName = "part2_sorted.txt";
+        System.out.println(test.perform(firstFileName, secondFileName));
+    }
+}
